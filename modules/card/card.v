@@ -18,15 +18,11 @@ pub:
 pub fn all_cards() []Card {
 	mut tmp := []Card{}
 	for num in 2 .. 15 {
-		for suit in all_suit {
-			tmp << Card {num, suit}
+		for suit in card.all_suit {
+			tmp << Card{num, suit}
 		}
 	}
 	return tmp
-}
-
-pub fn all_str_cards() []string {
-	return all_cards().map(it.card_num())
 }
 
 pub fn (card &Card) card_num() string {
@@ -40,14 +36,6 @@ pub fn (card &Card) card_num() string {
 
 pub fn (card &Card) card_strength() int {
 	return card.num
-}
-
-// TODO: merge sort with card.num
-pub fn (mut cards []Card) sort() []Card {
-	mut tmp := []Card{}
-	mut center := cards.len / 2
-
-	return cards
 }
 
 fn show_card_number(i int) string {
