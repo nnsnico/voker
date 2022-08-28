@@ -9,6 +9,7 @@ mut:
 }
 
 struct Hand {
+pub:
 	cards []card.Card
 }
 

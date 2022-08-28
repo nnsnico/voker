@@ -7,7 +7,7 @@ import strconv
 interface Player {
 mut:
 	hand Hand
-	play_turn(mut deck Deck) ?
+	play_turn(mut deck Deck) ?PokerHand
 	change_cards(discard_cards []card.Card, mut deck Deck) ?
 }
 
@@ -82,7 +82,8 @@ fn print_hands(discard_cards []card.Card, player Player) {
 	println('$prefix: ${player.show_change_hand(discard_cards)}')
 }
 
-fn (mut me Me) play_turn(mut deck Deck) ? {
+fn (mut me Me) play_turn(mut deck Deck) ?PokerHand {
+	mut poker_hand := PokerHand{}
 	outer: for {
 		print_hands([], me)
 		discard_cards := select_discard_cards(me.hand.cards)?
@@ -92,11 +93,13 @@ fn (mut me Me) play_turn(mut deck Deck) ? {
 		if y_or_n {
 			me.change_cards(discard_cards, mut deck)?
 			print_hands([], me)
+			poker_hand = make_poker_hand(me.hand)
 		} else {
 			continue outer
 		}
 		break
 	}
+	return poker_hand
 }
 
 fn (mut me Me) change_cards(discard_cards []card.Card, mut deck Deck) ? {
@@ -105,8 +108,9 @@ fn (mut me Me) change_cards(discard_cards []card.Card, mut deck Deck) ? {
 	me.hand = new_hands
 }
 
-fn (mut enemy Enemy) play_turn(mut deck Deck) ? {
+fn (mut enemy Enemy) play_turn(mut deck Deck) ?PokerHand {
 	print_hands([], enemy)
+	return none
 }
 
 fn (mut enemy Enemy) change_cards(discard_cards []card.Card, mut deck Deck) ? {
@@ -122,7 +126,8 @@ pub fn start(mut deck Deck) ? {
 	mut me := Me{
 		hand: my_hand
 	}
-	me.play_turn(mut deck)?
+	my_poker_hand := me.play_turn(mut deck)?
+	println(my_poker_hand)
 
 	// enemy's turn
 	enemy_hand := deck.draw_hand(5)?
