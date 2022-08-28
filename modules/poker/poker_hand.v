@@ -16,6 +16,7 @@ enum HandRanking {
 }
 
 pub struct PokerHand {
+pub:
 	rank           HandRanking
 	strongest_card card.Card
 }
@@ -117,4 +118,13 @@ pub fn make_poker_hand(hand Hand) PokerHand {
 		}
 	}
 	return poker_hand
+}
+
+pub fn auto_disuse_cards(hand Hand) []card.Card {
+	mut n_of_kind := []card.Card{}
+	n_of_kind << arrays.flatten(n_of_kind_hint(2, hand))
+	n_of_kind << arrays.flatten(n_of_kind_hint(3, hand))
+	n_of_kind << arrays.flatten(n_of_kind_hint(4, hand))
+
+	return hand.cards.filter(it !in n_of_kind)
 }

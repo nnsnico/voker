@@ -5,23 +5,29 @@ import readline { read_line }
 import strconv
 
 interface Player {
+	name string
 mut:
 	hand Hand
+	result PokerHand
 	play_turn(mut deck Deck) ?PokerHand
 	change_cards(discard_cards []card.Card, mut deck Deck) ?
 }
 
 struct Me {
+	name string
 mut:
-	hand Hand
+	hand   Hand
+	result PokerHand
 }
 
 struct Enemy {
+	name string
 mut:
-	hand Hand
+	hand   Hand
+	result PokerHand
 }
 
-fn select_discard_cards(hand []card.Card) ?[]card.Card {
+fn select_disuse_cards(hand []card.Card) ?[]card.Card {
 	mut listed_input := []int{}
 	outer: for {
 		listed_input = input_discard() or {
@@ -74,6 +80,7 @@ fn (player Player) show_change_hand(discard_cards []card.Card) []string {
 }
 
 fn print_hands(discard_cards []card.Card, player Player) {
+	println('')
 	prefix := match player {
 		Me { '-- My hands' }
 		Enemy { "-- Enemy's hands" }
@@ -82,11 +89,35 @@ fn print_hands(discard_cards []card.Card, player Player) {
 	println('$prefix: ${player.show_change_hand(discard_cards)}')
 }
 
+fn judge(me Player, enemy Player) {
+	println('')
+	println('***** RESULT *****')
+	print_hands([], me)
+	print_hands([], enemy)
+
+	println("***** $me.name's poker hands is $me.result.rank, and the strongest card is $me.result.strongest_card.card_num() *****")
+	println("***** $enemy.name's poker hands is $enemy.result.rank, and the strongest card is $enemy.result.strongest_card.card_num() *****")
+
+	if int(me.result.rank) > int(enemy.result.rank) {
+		println("***** $me.name's win *****")
+	} else if int(me.result.rank) < int(enemy.result.rank) {
+		println("***** $enemy.name's win *****")
+	} else {
+		if me.result.strongest_card.num > enemy.result.strongest_card.num {
+			println("***** $me.name's win *****")
+		} else if me.result.strongest_card.num < enemy.result.strongest_card.num {
+			println("***** $enemy.name's win *****")
+		} else {
+			println('***** draw *****')
+		}
+	}
+}
+
 fn (mut me Me) play_turn(mut deck Deck) ?PokerHand {
 	mut poker_hand := PokerHand{}
 	outer: for {
 		print_hands([], me)
-		discard_cards := select_discard_cards(me.hand.cards)?
+		discard_cards := select_disuse_cards(me.hand.cards)?
 
 		print_hands(discard_cards, me)
 		y_or_n := yn_question('-- really?')?
@@ -110,10 +141,21 @@ fn (mut me Me) change_cards(discard_cards []card.Card, mut deck Deck) ? {
 
 fn (mut enemy Enemy) play_turn(mut deck Deck) ?PokerHand {
 	print_hands([], enemy)
-	return none
+	discard_cards := auto_disuse_cards(enemy.hand)
+
+	print_hands(discard_cards, enemy)
+	enemy.change_cards(discard_cards, mut deck)?
+
+	print_hands([], enemy)
+	poker_hand := make_poker_hand(enemy.hand)
+
+	return poker_hand
 }
 
 fn (mut enemy Enemy) change_cards(discard_cards []card.Card, mut deck Deck) ? {
+	addtional_hands := deck.draw_hand(discard_cards.len)?
+	new_hands := enemy.hand.change_hands(discard_cards, addtional_hands.cards)?
+	enemy.hand = new_hands
 }
 
 pub fn start(mut deck Deck) ? {
@@ -124,15 +166,18 @@ pub fn start(mut deck Deck) ? {
 	// my turn
 	my_hand := deck.draw_hand(5)?
 	mut me := Me{
+		name: 'player'
 		hand: my_hand
 	}
-	my_poker_hand := me.play_turn(mut deck)?
-	println(my_poker_hand)
+	me.result = me.play_turn(mut deck)?
 
 	// enemy's turn
 	enemy_hand := deck.draw_hand(5)?
 	mut enemy := Enemy{
+		name: 'computer'
 		hand: enemy_hand
 	}
-	enemy.play_turn(mut deck)?
+	enemy.result = enemy.play_turn(mut deck)?
+
+	judge(me, enemy)
 }
