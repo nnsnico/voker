@@ -34,10 +34,6 @@ pub fn (card &Card) card_num() string {
 	}
 }
 
-pub fn (card &Card) card_strength() int {
-	return card.num
-}
-
 fn show_card_number(i int) string {
 	return match i {
 		14 { 'A_' }
