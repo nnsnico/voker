@@ -85,7 +85,7 @@ fn test_check_two_pair() ? {
 	mut result := check_two_pair(poker.two_pair_hands)?
 
 	assert result.rank == .two_pair
-	assert result.strongest_card == card.Card{3, .spade}
+	assert result.strongest_card == card.Card{3, .club}
 }
 
 fn test_check_three_of_a_kind() ? {
