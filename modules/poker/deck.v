@@ -13,7 +13,7 @@ pub:
 	cards []card.Card
 }
 
-fn to_hand(cards []card.Card) ?Hand {
+fn to_hand(cards []card.Card) Hand {
 	mut c := cards.clone()
 	c.sort(a.num < b.num)
 	return Hand{c}
