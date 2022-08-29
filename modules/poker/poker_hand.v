@@ -102,21 +102,39 @@ fn check_straight_flush(hand Hand) ?PokerHand {
 }
 
 pub fn make_poker_hand(hand Hand) PokerHand {
-	poker_hand := check_straight_flush(hand) or {
-		check_four_of_a_kind(hand) or {
-			check_full_house(hand) or {
-				check_flush(hand) or {
-					check_straight(hand) or {
-						check_three_of_a_kind(hand) or {
-							check_two_pair(hand) or {
-								check_one_pair(hand) or { PokerHand{.high_card, hand.cards.last()} }
-							}
-						}
-					}
-				}
-			}
+	high_card := PokerHand{.high_card, hand.cards.last()}
+
+	// NOTE: Alternative solution
+	// poker_hand := check_straight_flush(hand) or {
+	// 	check_four_of_a_kind(hand) or {
+	// 		check_full_house(hand) or {
+	// 			check_flush(hand) or {
+	// 				check_straight(hand) or {
+	// 					check_three_of_a_kind(hand) or {
+	// 						check_two_pair(hand) or { check_one_pair(hand) or { high_card } }
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
+	results := [
+		check_straight_flush(hand) or { high_card },
+		check_four_of_a_kind(hand) or { high_card },
+		check_full_house(hand) or { high_card },
+		check_flush(hand) or { high_card },
+		check_straight(hand) or { high_card },
+		check_three_of_a_kind(hand) or { high_card },
+		check_two_pair(hand) or { high_card },
+		check_one_pair(hand) or { high_card },
+	]
+	poker_hand := arrays.fold(results, high_card, fn (t1 PokerHand, t2 PokerHand) PokerHand {
+		return if int(t2.rank) > int(t1.rank) {
+			t2
+		} else {
+			t1
 		}
-	}
+	})
 	return poker_hand
 }
 
