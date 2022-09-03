@@ -80,7 +80,6 @@ fn (player Player) show_change_hand(discard_cards []card.Card) []string {
 }
 
 fn print_hands(discard_cards []card.Card, player Player) {
-	println('')
 	prefix := match player {
 		Me { '-- My hands' }
 		Enemy { "-- Enemy's hands" }
@@ -95,8 +94,8 @@ fn judge(me Player, enemy Player) {
 	print_hands([], me)
 	print_hands([], enemy)
 
-	println("***** $me.name's poker hands is $me.result.rank, and the strongest card is $me.result.strongest_card.card_num() *****")
-	println("***** $enemy.name's poker hands is $enemy.result.rank, and the strongest card is $enemy.result.strongest_card.card_num() *****")
+	println("***** $me.name's poker hands is $me.result.rank.to_string(), and the strongest card is $me.result.strongest_card.card_num() *****")
+	println("***** $enemy.name's poker hands is $enemy.result.rank.to_string(), and the strongest card is $enemy.result.strongest_card.card_num() *****")
 
 	if int(me.result.rank) > int(enemy.result.rank) {
 		println("***** $me.name's win *****")

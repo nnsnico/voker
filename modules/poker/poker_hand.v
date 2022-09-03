@@ -146,3 +146,7 @@ pub fn auto_disuse_cards(hand Hand) []card.Card {
 
 	return hand.cards.filter(it !in n_of_kind)
 }
+
+pub fn (rank HandRanking) to_string() string {
+	return rank.str().replace('_', ' ').title()
+}
