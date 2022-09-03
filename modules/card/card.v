@@ -27,20 +27,20 @@ pub fn all_cards() []Card {
 
 pub fn (card &Card) card_num() string {
 	return match card.suit {
-		.heart { 'H${show_card_number(card.num)}' }
-		.diamond { 'D${show_card_number(card.num)}' }
-		.club { 'C${show_card_number(card.num)}' }
-		.spade { 'S${show_card_number(card.num)}' }
+		.heart { '♡ ${show_card_number(card.num)}' }
+		.diamond { '♢ ${show_card_number(card.num)}' }
+		.club { '♧ ${show_card_number(card.num)}' }
+		.spade { '♤ ${show_card_number(card.num)}' }
 	}
 }
 
 fn show_card_number(i int) string {
 	return match i {
-		14 { 'A_' }
-		13 { 'K_' }
-		12 { 'Q_' }
-		11 { 'J_' }
+		14 { 'A' }
+		13 { 'K' }
+		12 { 'Q' }
+		11 { 'J' }
 		10 { '10' }
-		else { '${i}_' }
+		else { '$i' }
 	}
 }
