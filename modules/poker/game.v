@@ -40,9 +40,9 @@ fn select_disuse_cards(hand []card.Card) ?[]card.Card {
 }
 
 fn input_discard() ?[]int {
-	input := read_line('-- select disuse cards: ')?
+	input := read_line('-- select disuse cards: ') or { return none }
 	idx_list := input.trim('\n').split('')
-		.map(strconv.atoi(it)?)
+		.map(strconv.atoi(it) or { return none })
 	if idx_list.len > 5 || idx_list.any(it > 5) {
 		return none
 	}
@@ -52,7 +52,7 @@ fn input_discard() ?[]int {
 fn yn_question(message string) ?bool {
 	mut y_or_n := false
 	outer: for {
-		input := read_line('$message (y/n) ')?
+		input := read_line('$message (y/n) ') or { return none }
 		if input.trim('\n') == 'y' {
 			y_or_n = true
 			break

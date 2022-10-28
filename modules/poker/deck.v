@@ -25,7 +25,7 @@ fn (hand Hand) drop_cards(discard_hands []card.Card) []card.Card {
 
 pub fn setup_deck() ?Deck {
 	deck := Deck{}
-	shuffled_deck := rand.shuffle_clone(deck.remaining_cards)?
+	shuffled_deck := rand.shuffle_clone(deck.remaining_cards) or { return none }
 	return Deck{
 		remaining_cards: shuffled_deck
 	}
