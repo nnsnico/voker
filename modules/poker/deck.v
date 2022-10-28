@@ -10,7 +10,7 @@ mut:
 
 struct Hand {
 pub:
-	cards []card.Card
+	cards []card.Card [required]
 }
 
 fn to_hand(cards []card.Card) Hand {
@@ -32,6 +32,7 @@ pub fn setup_deck() ?Deck {
 }
 
 pub fn (mut deck Deck) draw_hand(num_of_cards int) ?Hand {
+	// TODO: map to Optional type after supportting to return Result type
 	drawed_cards := deck.remaining_cards[..num_of_cards]
 	deck.remaining_cards.drop(num_of_cards)
 	return to_hand(drawed_cards)
@@ -41,7 +42,7 @@ pub fn (deck &Deck) get_remaining_cards() []card.Card {
 	return deck.remaining_cards
 }
 
-pub fn (hand Hand) change_hands(discard_hands []card.Card, additional_cards []card.Card) ?Hand {
+pub fn (hand Hand) change_hands(discard_hands []card.Card, additional_cards []card.Card) Hand {
 	mut new_cards := hand.drop_cards(discard_hands)
 	new_cards << additional_cards
 	return to_hand(new_cards)

@@ -11,8 +11,8 @@ const all_suit = [Suit.heart, Suit.diamond, Suit.club, Suit.spade]
 
 pub struct Card {
 pub:
-	num  int
-	suit Suit
+	num  int  [required]
+	suit Suit [required]
 }
 
 pub fn all_cards() []Card {

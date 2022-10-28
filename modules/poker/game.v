@@ -14,14 +14,14 @@ mut:
 }
 
 struct Me {
-	name string
+	name string [required]
 mut:
 	hand   Hand
 	result PokerHand
 }
 
 struct Enemy {
-	name string
+	name string [required]
 mut:
 	hand   Hand
 	result PokerHand
